@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fraud Detection System — Hannibal</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a28;
+      --border: #2a2a3a;
+      --text: #e5e5ef;
+      --muted: #888899;
+      --accent: #6366f1;
+      --accent2: #818cf8;
+      --red: #ef4444;
+      --orange: #f97316;
+      --yellow: #eab308;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --purple: #a855f7;
+      --cyan: #06b6d4;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* Header */
+    .hero { padding: 4rem 2rem 3rem; text-align: center; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #0f0f1a 0%, var(--bg) 100%); }
+    .hero h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .hero h1 span { background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero .subtitle { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 1.5rem; }
+    .badge-row { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .badge { padding: 0.3rem 0.8rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+    .badge-red { background: #ef44441a; color: var(--red); border: 1px solid #ef444433; }
+    .badge-yellow { background: #eab3081a; color: var(--yellow); border: 1px solid #eab30833; }
+    .badge-blue { background: #3b82f61a; color: var(--blue); border: 1px solid #3b82f633; }
+    .badge-green { background: #22c55e1a; color: var(--green); border: 1px solid #22c55e33; }
+    .badge-purple { background: #a855f71a; color: var(--purple); border: 1px solid #a855f733; }
+
+    /* Layout */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+    section { padding: 3rem 0; border-bottom: 1px solid var(--border); }
+    section:last-child { border-bottom: none; }
+    h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent2); }
+    p { color: var(--muted); margin-bottom: 1rem; }
+
+    /* Navigation */
+    .toc { position: sticky; top: 0; z-index: 100; background: rgba(10,10,15,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0.75rem 0; }
+    .toc-inner { display: flex; gap: 0.25rem; overflow-x: auto; scrollbar-width: none; max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc a { padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.8rem; color: var(--muted); text-decoration: none; white-space: nowrap; transition: all 0.2s; }
+    .toc a:hover { background: var(--surface2); color: var(--text); }
+
+    /* Cards */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; transition: border-color 0.2s; }
+    .card:hover { border-color: var(--accent); }
+    .card-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }
+    .card p { font-size: 0.85rem; color: var(--muted); margin-bottom: 0; }
+
+    /* Status Grid */
+    .status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem; }
+    .status-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot-red { background: var(--red); box-shadow: 0 0 8px #ef444466; }
+    .dot-yellow { background: var(--yellow); box-shadow: 0 0 8px #eab30866; }
+    .dot-green { background: var(--green); box-shadow: 0 0 8px #22c55e66; }
+    .dot-blue { background: var(--blue); box-shadow: 0 0 8px #3b82f666; }
+    .dot-purple { background: var(--purple); box-shadow: 0 0 8px #a855f766; }
+    .status-label { font-size: 0.85rem; font-weight: 500; }
+    .status-sub { font-size: 0.7rem; color: var(--muted); }
+
+    /* Threat Table */
+    .threat-table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+    .threat-table th { background: var(--surface2); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); font-weight: 600; }
+    .threat-table td { padding: 0.75rem 1rem; border-top: 1px solid var(--border); font-size: 0.85rem; vertical-align: top; }
+    .threat-table tr:hover td { background: var(--surface2); }
+    .sev { padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .sev-critical { background: #ef44442a; color: var(--red); }
+    .sev-high { background: #f973162a; color: var(--orange); }
+    .sev-medium { background: #eab3082a; color: var(--yellow); }
+    .sev-low { background: #22c55e2a; color: var(--green); }
+
+    /* Diagram */
+    .diagram-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; overflow-x: auto; }
+    .diagram-wrap .mermaid { display: flex; justify-content: center; }
+    .diagram-caption { text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem; }
+
+    /* Phase Timeline */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before { content: ''; position: absolute; left: 0.5rem; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--accent), var(--purple), var(--cyan)); }
+    .timeline-item { position: relative; margin-bottom: 2rem; }
+    .timeline-dot { position: absolute; left: -1.65rem; top: 0.25rem; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--bg); }
+    .timeline-content { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+    .timeline-content h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .timeline-content .phase-tag { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .timeline-content ul { list-style: none; }
+    .timeline-content li { font-size: 0.85rem; color: var(--muted); padding: 0.2rem 0; padding-left: 1.25rem; position: relative; }
+    .timeline-content li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+
+    /* Approval Section */
+    .approval-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem; }
+    .approval-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; }
+    .approval-item h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.5rem; }
+    .approval-item p { font-size: 0.8rem; color: var(--muted); margin: 0; }
+    .vote { display: inline-flex; gap: 0.25rem; margin-top: 0.5rem; }
+    .vote-btn { padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; cursor: default; }
+    .vote-yes { background: #22c55e1a; color: var(--green); border: 1px solid #22c55e33; }
+    .vote-no { background: #ef44441a; color: var(--red); border: 1px solid #ef444433; }
+    .vote-later { background: #eab3081a; color: var(--yellow); border: 1px solid #eab30833; }
+
+    /* Stat cards */
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+    .stat-num { font-size: 2rem; font-weight: 700; }
+    .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Tech stack */
+    .tech-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+    .tech-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; display: flex; align-items: flex-start; gap: 0.75rem; }
+    .tech-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .tech-name { font-size: 0.9rem; font-weight: 600; }
+    .tech-desc { font-size: 0.75rem; color: var(--muted); }
+
+    /* Footer */
+    .footer { padding: 2rem 0; text-align: center; color: var(--muted); font-size: 0.8rem; border-top: 1px solid var(--border); }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.75rem; }
+      .card-grid { grid-template-columns: 1fr; }
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>Fraud Detection <span>System</span></h1>
+  <p class="subtitle">Visual overview of fraud detection features for team review and approval. All features require sign-off before implementation.</p>
+  <div class="badge-row">
+    <span class="badge badge-red">Needs Approval</span>
+    <span class="badge badge-blue">March 2026</span>
+    <span class="badge badge-purple">Hannibal Platform</span>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#current">Current State</a>
+    <a href="#threats">Threat Map</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#layers">Defense Layers</a>
+    <a href="#dataflow">Data Flow</a>
+    <a href="#tech">Tech Stack</a>
+    <a href="#phases">Rollout Phases</a>
+    <a href="#compliance">Compliance</a>
+    <a href="#features">Feature Approvals</a>
+  </div>
+</nav>
+
+<div class="container">
+
+<!-- Section: Current State -->
+<section id="current">
+  <h2>Current State</h2>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-num" style="color: var(--green);">4</div>
+      <div class="stat-label">Implemented</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color: var(--yellow);">3</div>
+      <div class="stat-label">Partial</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color: var(--red);">15</div>
+      <div class="stat-label">Not Built</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color: var(--red);">1</div>
+      <div class="stat-label">Vulnerability</div>
+    </div>
+  </div>
+
+  <h3>What Exists Today (B-Book v3 — by Prashant)</h3>
+  <div class="status-grid">
+    <div class="status-item"><div class="status-dot dot-green"></div><div><div class="status-label">5-Pillar Sharp Detection</div><div class="status-sub">CLV, device, IP, pattern, payment</div></div></div>
+    <div class="status-item"><div class="status-dot dot-green"></div><div><div class="status-label">Collusion Detection</div><div class="status-sub">Cooling-off, flip limits, agent freeze</div></div></div>
+    <div class="status-item"><div class="status-dot dot-green"></div><div><div class="status-label">Filter Engine</div><div class="status-sub">Sharp &rarr; exchange-only routing</div></div></div>
+    <div class="status-item"><div class="status-dot dot-green"></div><div><div class="status-label">B-Book Alerting</div><div class="status-sub">P1-P3, Slack/Telegram</div></div></div>
+    <div class="status-item"><div class="status-dot dot-yellow"></div><div><div class="status-label">Device Fingerprint Schema</div><div class="status-sub">V3DeviceFingerprint — no JS SDK</div></div></div>
+    <div class="status-item"><div class="status-dot dot-yellow"></div><div><div class="status-label">IP Access Logs</div><div class="status-sub">V3IpAccessLog — no real-time alerts</div></div></div>
+    <div class="status-item"><div class="status-dot dot-yellow"></div><div><div class="status-label">Win Rate Tracking</div><div class="status-sub">At sharp flagging only, not continuous</div></div></div>
+  </div>
+
+  <h3 style="margin-top: 1.5rem;">What Does NOT Exist</h3>
+  <div class="status-grid">
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">IP Tracking on Login/Bet</div><div class="status-sub">Zero IPs captured on any action</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Device Fingerprint SDK</div><div class="status-sub">No browser-side collection</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Geolocation / VPN Detection</div><div class="status-sub">No geo checks at all</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Risk Scoring Engine</div><div class="status-sub">No per-bet risk scoring</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Velocity Limits</div><div class="status-sub">No bet frequency caps</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Login Event Tracking</div><div class="status-sub">Only User.lastLogin timestamp</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Admin Fraud Dashboard</div><div class="status-sub">No alert queue or case mgmt</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Market Manipulation Detection</div><div class="status-sub">No steam/volume monitoring</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Blocked Entity System</div><div class="status-sub">No IP/device/user blocking</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Admin Audit Log</div><div class="status-sub">No admin action trail</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Cross-User Correlation</div><div class="status-sub">No ring/collusion detection</div></div></div>
+    <div class="status-item"><div class="status-dot dot-red"></div><div><div class="status-label">Courtsiding Detection</div><div class="status-sub">No venue geofencing</div></div></div>
+  </div>
+
+  <div style="margin-top: 1.5rem; background: #ef44440d; border: 1px solid #ef444433; border-radius: 10px; padding: 1rem 1.25rem;">
+    <h4 style="color: var(--red); font-size: 0.9rem; margin-bottom: 0.35rem;">&#9888; Active Vulnerability: Email Account Linking</h4>
+    <p style="font-size: 0.8rem; margin: 0;">auth.ts uses OR-based lookup across email, wallet, web3AuthId. Attacker with victim's email via social login can match to victim's account. <strong>Needs immediate fix.</strong></p>
+  </div>
+</section>
+
+<!-- Section: Existing vs Planned -->
+<section id="existing">
+  <h2>What Exists vs What We're Building</h2>
+  <p>We already have a solid foundation from the B-Book v3 system. The fraud detection system builds directly on top of it.</p>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
+graph TB
+    subgraph NEW["NEW — Fraud Detection Layer"]
+        direction TB
+        N1["fraudDetectionService.ts<br/><i>Risk scoring engine</i>"]
+        N2["betContextService.ts<br/><i>IP/device/geo middleware</i>"]
+        N3["fraudBlockingService.ts<br/><i>IP/device/user blocks</i>"]
+        N4["fraudCorrelationService.ts<br/><i>Cross-user patterns</i>"]
+        N5["marketSignalService.ts<br/><i>Steam/volume detection</i>"]
+        N6["Admin Fraud Dashboard<br/><i>4 new pages</i>"]
+    end
+
+    subgraph EXISTS["EXISTS — B-Book v3 (Reuse)"]
+        direction TB
+        E1["sharpDetection.ts<br/><i>5-pillar scoring (877 lines)</i>"]
+        E2["collusionDetection.ts<br/><i>Agent monitoring (889 lines)</i>"]
+        E3["filterEngine.ts<br/><i>Sharp→exchange routing</i>"]
+        E4["alerting.ts<br/><i>P1-P3 + Slack/Telegram</i>"]
+        E5["noNewRisk.ts<br/><i>Risk threshold blocking</i>"]
+        E6["exposureLedger.ts<br/><i>PLATFORM_EVENT_CAP</i>"]
+    end
+
+    subgraph SCHEMA["EXISTS — Prisma Models (Reuse)"]
+        direction LR
+        S1["V3DeviceFingerprint"]
+        S2["V3IpAccessLog"]
+        S3["V3Alert"]
+        S4["V3UserClassification"]
+        S5["V3ClvEntry"]
+        S6["V3PaymentMethod"]
+        S7["SharpUser"]
+    end
+
+    N1 -->|"reads sharp score"| E1
+    N1 -->|"reads collusion score"| E2
+    N1 -->|"extends alert types"| E4
+    N3 -->|"integrates with"| E3
+    N4 -->|"queries"| S1
+    N4 -->|"queries"| S2
+    N1 -->|"queries"| S3
+    N2 -->|"writes to"| S1
+    N2 -->|"writes to"| S2
+
+    style NEW fill:#1a1a28,stroke:#3b82f6,stroke-width:2px
+    style EXISTS fill:#1a1a28,stroke:#22c55e,stroke-width:2px
+    style SCHEMA fill:#1a1a28,stroke:#a855f7,stroke-width:2px
+    </div>
+    <div class="diagram-caption">Blue = new services to build. Green = existing code we reuse. Purple = existing schemas we extend.</div>
+  </div>
+
+  <h3 style="margin-top: 2rem;">Existing Code: What It Does (Detail)</h3>
+  <table class="threat-table">
+    <thead>
+      <tr><th>File</th><th>Lines</th><th>What It Does</th><th>How Fraud System Uses It</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>sharpDetection.ts</strong></td>
+        <td>877</td>
+        <td>5-pillar scoring: CLV (30%), device fingerprint (15%), IP correlation (10%), betting patterns (20%), payment overlap (25%). Composite score: &ge;70 = SHARP, &ge;40 = NEW_ACCOUNT, &lt;40 = NORMAL.</td>
+        <td>Fraud risk scoring engine reads the composite sharp score as one of its inputs. No duplication — just consume the score.</td>
+      </tr>
+      <tr>
+        <td><strong>collusionDetection.ts</strong></td>
+        <td>889</td>
+        <td>Agent-punter collusion detection: cooling-off periods (24h/72h), flip frequency limits (max 3/week), collusion scoring (flip frequency + timing + P&amp;L asymmetry + volume concentration), auto-freeze at &ge;150.</td>
+        <td>Fraud scoring engine reads collusion score. Agent-level fraud alerts can trigger from collusion freeze events.</td>
+      </tr>
+      <tr>
+        <td><strong>filterEngine.ts</strong></td>
+        <td>~200</td>
+        <td>Routes orders: sharp users &rarr; exchange only. Checks B-Book capacity (global/market/selection/user levels), odds &amp; stake eligibility.</td>
+        <td>Fraud blocking integrates here — blocked users get REJECT before routing decision.</td>
+      </tr>
+      <tr>
+        <td><strong>alerting.ts</strong></td>
+        <td>~150</td>
+        <td>V3Alert creation + dispatch. Alert types: COLLUSION_FREEZE, NO_NEW_RISK, SETTLEMENT_FAILURE, HEDGE_FAILED, DLQ_ENTRY, BETFAIR_DOWN. Slack + Telegram.</td>
+        <td>We ADD new alert types (VELOCITY_BREACH, MULTI_ACCOUNT, COURTSIDING, MATCH_FIXING_SIGNAL, etc.) to the same pipeline. Same dispatch infrastructure.</td>
+      </tr>
+      <tr>
+        <td><strong>noNewRisk.ts</strong></td>
+        <td>643</td>
+        <td>Scope-aware bet blocking when risk thresholds are breached. Coordinates NNR state across the agent hierarchy.</td>
+        <td>Fraud system's blocked entity check runs BEFORE this. If fraud blocks, NNR never evaluates.</td>
+      </tr>
+      <tr>
+        <td><strong>exposureLedger.ts</strong></td>
+        <td>582</td>
+        <td>2-tier exposure tracking (Redis + PG). PLATFORM_EVENT_CAP for cross-agent syndicate detection. Aggregate retained liability across all agents per event.</td>
+        <td>PLATFORM_EVENT_CAP already detects one syndicate pattern. Fraud correlation engine extends this with timing + device + IP clustering.</td>
+      </tr>
+      <tr>
+        <td><strong>V3DeviceFingerprint</strong></td>
+        <td>schema</td>
+        <td>Stores: userId, deviceId, canvasHash, userAgent, screenResolution, timezone, webglHash, IP address.</td>
+        <td>Fraud middleware writes to this table on every login/bet. Correlation engine queries it for multi-account detection.</td>
+      </tr>
+      <tr>
+        <td><strong>V3IpAccessLog</strong></td>
+        <td>schema</td>
+        <td>Stores: userId, ipAddress, requestCount, firstSeen, lastSeen.</td>
+        <td>Fraud middleware increments on every request. Same-IP multi-user alerts query this table.</td>
+      </tr>
+      <tr>
+        <td><strong>V3Alert</strong></td>
+        <td>schema</td>
+        <td>Stores: alertType, severity (P1/P2/P3), message, metadata, status (ACTIVE/RESOLVED/ACKNOWLEDGED), agentId.</td>
+        <td>Fraud alerts use the SAME model. New alert types are added. Admin fraud dashboard queries this table.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top: 2rem;">New Code: What We Build on Top</h3>
+  <table class="threat-table">
+    <thead>
+      <tr><th>Component</th><th>Type</th><th>What It Does</th><th>Depends On</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>betContextService.ts</strong></td>
+        <td>Middleware</td>
+        <td>Express middleware on every request. Extracts IP (x-forwarded-for), device FP (from request body), geolocation (MaxMind GeoIP2 lookup). Attaches to req.fraudContext. Writes V3DeviceFingerprint + V3IpAccessLog.</td>
+        <td>V3DeviceFingerprint, V3IpAccessLog, MaxMind DB</td>
+      </tr>
+      <tr>
+        <td><strong>fraudDetectionService.ts</strong></td>
+        <td>Service</td>
+        <td>Called synchronously on every bet. Computes risk score (0-100) from 8 signals: velocity, IP multi-account, device multi-account, geo anomaly, sharp score (from sharpDetection), collusion score, slippage, cancel rate. Returns ACCEPT/MONITOR/FRICTION/DECLINE.</td>
+        <td>sharpDetection.ts, collusionDetection.ts, Redis counters</td>
+      </tr>
+      <tr>
+        <td><strong>fraudBlockingService.ts</strong></td>
+        <td>Service</td>
+        <td>Manages BlockedEntity table. Checks fraud:blocked:* Redis cache on every request. Block types: hard_block, soft_block, warn. Supports IP, device, user, and agent blocking.</td>
+        <td>BlockedEntity (new model), Redis</td>
+      </tr>
+      <tr>
+        <td><strong>fraudCorrelationService.ts</strong></td>
+        <td>Background Job</td>
+        <td>Runs every 60s. Detects correlated betting: same fixture+outcome within &plusmn;10s from different agent trees. IP clustering. Device clustering. Creates BetCorrelation records + V3Alert.</td>
+        <td>V3DeviceFingerprint, V3IpAccessLog, V3Alert</td>
+      </tr>
+      <tr>
+        <td><strong>marketSignalService.ts</strong></td>
+        <td>Background Job</td>
+        <td>Taps BetfairCache stream updates. Persists LTP + volume time-series to Redis sorted sets (24h TTL). Detects steam moves (&gt;15% in &lt;2min), volume spikes (&gt;3x in 30min). Creates V3Alert.</td>
+        <td>BetfairCache (existing), V3Alert, Redis</td>
+      </tr>
+      <tr>
+        <td><strong>LoginEvent</strong></td>
+        <td>Prisma Model</td>
+        <td>Records every login: userId, IP, device FP, geo (country, city, lat/lng), wallet chain, success/failure, risk score. Enables impossible travel and new device detection.</td>
+        <td>New migration</td>
+      </tr>
+      <tr>
+        <td><strong>BetContext</strong></td>
+        <td>Prisma Model</td>
+        <td>Records fraud metadata per bet: IP, device FP, geo, risk score, risk level, risk signals (JSON), recommendation, venue distance. Links to Order.</td>
+        <td>New migration</td>
+      </tr>
+      <tr>
+        <td><strong>BlockedEntity</strong></td>
+        <td>Prisma Model</td>
+        <td>Stores blocked IPs, devices, users, agents. Block type (hard/soft/warn), reason, expiry, linked case.</td>
+        <td>New migration</td>
+      </tr>
+      <tr>
+        <td><strong>FraudCase</strong></td>
+        <td>Prisma Model</td>
+        <td>Investigation cases grouping related alerts. Title, severity, status (open/investigating/resolved), assigned admin, findings, action taken.</td>
+        <td>New migration</td>
+      </tr>
+      <tr>
+        <td><strong>BetCorrelation</strong></td>
+        <td>Prisma Model</td>
+        <td>Records correlated betting patterns. Type (same_fixture, opposing_sides, timing_cluster), correlated userIds/orderIds, correlation score.</td>
+        <td>New migration</td>
+      </tr>
+      <tr>
+        <td><strong>AdminAuditLog</strong></td>
+        <td>Prisma Model</td>
+        <td>Logs every admin action: who, what, target, previous/new state, IP. 5-year retention.</td>
+        <td>New migration</td>
+      </tr>
+      <tr>
+        <td><strong>/admin/fraud/*</strong></td>
+        <td>Frontend (4 pages)</td>
+        <td>Dashboard (stats + timeline), alerts (queue with filters), cases (investigation mgmt), blocked (entity management), rules (threshold config).</td>
+        <td>V3Alert, FraudCase, BlockedEntity APIs</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Section: Threat Map -->
+<section id="threats">
+  <h2>Threat Map</h2>
+  <p>15 fraud vectors organized by severity. Each needs a detection strategy approved by the team.</p>
+
+  <table class="threat-table">
+    <thead>
+      <tr><th>#</th><th>Threat</th><th>Severity</th><th>B-Book v3 Coverage</th><th>What We Need to Build</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><strong>Multi-Accounting</strong><br><span style="color:var(--muted);font-size:0.8rem;">Same person, multiple accounts</span></td><td><span class="sev sev-critical">CRITICAL</span></td><td>40% — device/IP schema exists</td><td>FP SDK, login events, cross-agent matching</td></tr>
+      <tr><td>2</td><td><strong>Agent-Punter Collusion</strong><br><span style="color:var(--muted);font-size:0.8rem;">Agent creates puppet accounts</span></td><td><span class="sev sev-critical">CRITICAL</span></td><td>50% — cooling-off, flip limits</td><td>Allocation-to-bet velocity, IP correlation</td></tr>
+      <tr><td>3</td><td><strong>Courtsiding / Venue Betting</strong><br><span style="color:var(--muted);font-size:0.8rem;">Betting from stadium with info advantage</span></td><td><span class="sev sev-high">HIGH</span></td><td>0%</td><td>Venue geofencing, bet-event timing</td></tr>
+      <tr><td>4</td><td><strong>Same-IP Multi-Agent</strong><br><span style="color:var(--muted);font-size:0.8rem;">Multiple agents on same IP</span></td><td><span class="sev sev-high">HIGH</span></td><td>30% — IP logs exist</td><td>Real-time IP-to-user alerts</td></tr>
+      <tr><td>5</td><td><strong>Latency Arbitrage</strong><br><span style="color:var(--muted);font-size:0.8rem;">Exploiting stale odds</span></td><td><span class="sev sev-high">HIGH</span></td><td>0%</td><td>Per-user slippage tracking</td></tr>
+      <tr><td>6</td><td><strong>Match-Fixing Signals</strong><br><span style="color:var(--muted);font-size:0.8rem;">Steam moves, volume spikes</span></td><td><span class="sev sev-high">HIGH</span></td><td>0%</td><td>Market signal service, LTP time-series</td></tr>
+      <tr><td>7</td><td><strong>Cancel-and-Rebet Abuse</strong><br><span style="color:var(--muted);font-size:0.8rem;">Free option exploitation</span></td><td><span class="sev sev-medium">MEDIUM</span></td><td>0%</td><td>Cancel velocity tracking, delay for flagged</td></tr>
+      <tr><td>8</td><td><strong>Sharp User Evasion</strong><br><span style="color:var(--muted);font-size:0.8rem;">New account to bypass sharp flag</span></td><td><span class="sev sev-medium">MEDIUM</span></td><td>60% — device linking</td><td>Auto-flag on FP match</td></tr>
+      <tr><td>9</td><td><strong>Account Takeover</strong><br><span style="color:var(--muted);font-size:0.8rem;">Stolen credentials</span></td><td><span class="sev sev-medium">MEDIUM</span></td><td>0%</td><td>Impossible travel, new device alerts</td></tr>
+      <tr><td>10</td><td><strong>Ring Betting</strong><br><span style="color:var(--muted);font-size:0.8rem;">Coordinated group bets</span></td><td><span class="sev sev-medium">MEDIUM</span></td><td>0%</td><td>Time-window clustering, agent clustering</td></tr>
+      <tr><td>11</td><td><strong>Referral Code Abuse</strong><br><span style="color:var(--muted);font-size:0.8rem;">Mass phantom signups</span></td><td><span class="sev sev-medium">MEDIUM</span></td><td>0%</td><td>Referral velocity, phantom account detection</td></tr>
+      <tr><td>12</td><td><strong>Point Allocation Abuse</strong><br><span style="color:var(--muted);font-size:0.8rem;">Deposit-then-withdraw cycle</span></td><td><span class="sev sev-medium">MEDIUM</span></td><td>0%</td><td>Allocation-to-withdrawal velocity</td></tr>
+      <tr><td>13</td><td><strong>Bot / Automated Betting</strong><br><span style="color:var(--muted);font-size:0.8rem;">Scripts placing bets</span></td><td><span class="sev sev-low">LOW-MED</span></td><td>0%</td><td>Sub-second timing, headless detection</td></tr>
+      <tr><td>14</td><td><strong>Email Account Linking</strong><br><span style="color:var(--muted);font-size:0.8rem;">Auth OR-based lookup exploit</span></td><td><span class="sev sev-low">LOW</span></td><td style="color:var(--red);">VULNERABLE</td><td>Fix auth.ts OR logic</td></tr>
+      <tr><td>15</td><td><strong>Admin Action Abuse</strong><br><span style="color:var(--muted);font-size:0.8rem;">Rogue admin adjustments</span></td><td><span class="sev sev-low">LOW</span></td><td>0%</td><td>Admin audit log, sensitive action alerts</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Section: Architecture -->
+<section id="architecture">
+  <h2>Architecture Overview</h2>
+  <p>Synchronous risk scoring on every bet, async correlation in background. Layers on top of existing B-Book v3. Reuses V3DeviceFingerprint, V3IpAccessLog, V3Alert, and V3UserClassification schemas.</p>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'primaryBorderColor': '#4f46e5', 'lineColor': '#555', 'secondaryColor': '#1a1a28', 'tertiaryColor': '#12121a', 'edgeLabelBackground': '#12121a'}}}%%
+graph TB
+    subgraph Client["Browser / App"]
+        FP["Fingerprint.com SDK<br/>Device fingerprint on page load"]
+        GEO["Geolocation API<br/>GPS coordinates"]
+    end
+
+    subgraph API["Express API Layer"]
+        MW["Fraud Context Middleware<br/>IP + Device FP + Geo"]
+        AUTH["Auth Routes<br/>Login event capture"]
+        ORDERS["Order Routes<br/>Bet placement"]
+    end
+
+    subgraph Fraud["Fraud Detection Service"]
+        SCORE["Risk Scoring Engine<br/>0-100 score, &lt;50ms"]
+        BLOCK["Blocking Service<br/>IP / Device / User"]
+        ALERT["Alert Pipeline<br/>Create + Dispatch"]
+    end
+
+    subgraph Async["Async Workers"]
+        CORR["Correlation Engine<br/>Cross-user patterns"]
+        MKT["Market Signal Service<br/>Steam + Volume"]
+        WIN["Win Rate Monitor<br/>Post-settlement"]
+    end
+
+    subgraph Storage["Data Layer"]
+        REDIS["Redis<br/>Risk cache, velocity,<br/>IP sets, blocked entities"]
+        PG["PostgreSQL<br/>LoginEvent, BetContext,<br/>FraudAlert, FraudCase"]
+    end
+
+    subgraph Existing["Existing B-Book v3"]
+        SHARP["Sharp Detection<br/>5-pillar scoring"]
+        COLLUSION["Collusion Detection<br/>Agent monitoring"]
+        FILTER["Filter Engine<br/>Routing decisions"]
+    end
+
+    Client --> MW
+    MW --> AUTH
+    MW --> ORDERS
+    ORDERS --> SCORE
+    SCORE --> BLOCK
+    SCORE --> FILTER
+    SCORE --> ALERT
+    ORDERS -.-> CORR
+    ORDERS -.-> MKT
+    SCORE --> REDIS
+    ALERT --> PG
+    CORR --> PG
+    SHARP -.-> SCORE
+    COLLUSION -.-> SCORE
+    MKT -.-> ALERT
+    WIN -.-> ALERT
+
+    style Client fill:#1a1a28,stroke:#3b82f6
+    style API fill:#1a1a28,stroke:#6366f1
+    style Fraud fill:#1a1a28,stroke:#ef4444
+    style Async fill:#1a1a28,stroke:#f97316
+    style Storage fill:#1a1a28,stroke:#22c55e
+    style Existing fill:#1a1a28,stroke:#a855f7
+    </div>
+    <div class="diagram-caption">System architecture — new fraud layer (red) integrates with existing B-Book v3 (purple)</div>
+  </div>
+</section>
+
+<!-- Section: Defense Layers -->
+<section id="layers">
+  <h2>4-Layer Defense Model</h2>
+  <p>Each layer adds sophistication. Layer 1 runs on day 1. Layer 4 requires months of data.</p>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
+graph LR
+    L1["Layer 1<br/><b>Static Gates</b><br/>Day 1 &bull; &lt;5ms"]
+    L2["Layer 2<br/><b>Risk Score</b><br/>Week 2 &bull; &lt;50ms"]
+    L3["Layer 3<br/><b>Async Detection</b><br/>Week 3-5 &bull; Background"]
+    L4["Layer 4<br/><b>ML / AI</b><br/>Month 3+ &bull; Batch"]
+
+    L1 --> L2 --> L3 --> L4
+
+    style L1 fill:#0f3460,color:#fff,stroke:#3b82f6
+    style L2 fill:#533483,color:#fff,stroke:#a855f7
+    style L3 fill:#7f1d1d,color:#fff,stroke:#ef4444
+    style L4 fill:#1a1a2e,color:#ccc,stroke:#555
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-top: 1rem;">
+    <div class="card" style="border-left: 3px solid var(--blue);">
+      <div class="card-icon">&#128737;</div>
+      <h4>Layer 1: Static Gates</h4>
+      <p>Runs on EVERY bet in the hot path. Zero historical data needed.</p>
+      <ul style="list-style:none; font-size:0.85rem; color:var(--muted);">
+        <li>&#x2022; Velocity limits (bets/hour, $/hour per user &amp; agent tree)</li>
+        <li>&#x2022; Blocked entity check (IP, device, user)</li>
+        <li>&#x2022; Geolocation gate (blocked countries, VPN/TOR)</li>
+        <li>&#x2022; Thin market stake caps</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--purple);">
+      <div class="card-icon">&#128202;</div>
+      <h4>Layer 2: Risk Score</h4>
+      <p>Per-user composite score (0-100) checked on every bet.</p>
+      <ul style="list-style:none; font-size:0.85rem; color:var(--muted);">
+        <li>&#x2022; 8 weighted signals &rarr; single score</li>
+        <li>&#x2022; ACCEPT / MONITOR / FRICTION / DECLINE</li>
+        <li>&#x2022; Integrates B-Book v3 sharp score</li>
+        <li>&#x2022; Admin-configurable thresholds</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--red);">
+      <div class="card-icon">&#128269;</div>
+      <h4>Layer 3: Async Detection</h4>
+      <p>Background analysis, doesn't block bets. Generates alerts.</p>
+      <ul style="list-style:none; font-size:0.85rem; color:var(--muted);">
+        <li>&#x2022; Cross-user bet correlation (ring detection)</li>
+        <li>&#x2022; Market manipulation signals (steam moves)</li>
+        <li>&#x2022; Win rate anomaly (per-user, per-agent)</li>
+        <li>&#x2022; Cancel pattern analysis</li>
+        <li>&#x2022; Cricket event correlation (courtsiding)</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--muted);">
+      <div class="card-icon">&#129302;</div>
+      <h4>Layer 4: ML / AI (Future)</h4>
+      <p>Requires 2-3 months of data. Catches novel patterns.</p>
+      <ul style="list-style:none; font-size:0.85rem; color:var(--muted);">
+        <li>&#x2022; XGBoost risk score model</li>
+        <li>&#x2022; Graph-based ring detection (Neo4j)</li>
+        <li>&#x2022; Behavioral biometrics</li>
+        <li>&#x2022; Anomaly detection (Z-score, clustering)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Data Flow -->
+<section id="dataflow">
+  <h2>Bet Placement Flow (with Fraud Checks)</h2>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
+flowchart TD
+    A["User clicks Place Bet"] --> B["Fraud Context Middleware<br/><i>Extract IP, Device FP, Geo</i>"]
+    B --> C{"Blocked Entity<br/>Check"}
+    C -->|"IP/Device/User blocked"| REJ1["REJECT 403"]
+    C -->|"Clear"| D{"Velocity<br/>Check"}
+    D -->|"Over limit"| REJ2["REJECT + FLAG"]
+    D -->|"OK"| E{"Geolocation<br/>Gate"}
+    E -->|"Blocked country / TOR"| REJ3["REJECT + ALERT"]
+    E -->|"VPN detected"| FLAG1["FLAG + continue"]
+    E -->|"Clear"| F["Risk Scoring Engine"]
+    FLAG1 --> F
+    F --> G{"Score?"}
+    G -->|"80+"| REJ4["DECLINE + ESCALATE"]
+    G -->|"60-80"| CAP["CAP stake 25% + FLAG"]
+    G -->|"30-60"| MON["MONITOR"]
+    G -->|"0-30"| PASS["PASS"]
+    CAP --> H
+    MON --> H
+    PASS --> H
+    H["Existing Order Pipeline<br/><i>Validate, B-Book route, Exchange</i>"]
+    H --> I["Async Post-Bet"]
+    I --> J["Correlation Engine"]
+    I --> K["Update Velocity Counters"]
+    I --> L["Persist BetContext"]
+
+    style REJ1 fill:#7f1d1d,color:#fff,stroke:#ef4444
+    style REJ2 fill:#7f1d1d,color:#fff,stroke:#ef4444
+    style REJ3 fill:#7f1d1d,color:#fff,stroke:#ef4444
+    style REJ4 fill:#7f1d1d,color:#fff,stroke:#ef4444
+    style FLAG1 fill:#78350f,color:#fff,stroke:#f97316
+    style CAP fill:#78350f,color:#fff,stroke:#f97316
+    style PASS fill:#14532d,color:#fff,stroke:#22c55e
+    style F fill:#312e81,color:#fff,stroke:#6366f1
+    style H fill:#1a1a28,color:#e5e5ef,stroke:#555
+    </div>
+    <div class="diagram-caption">Fraud checks inject BEFORE the existing order pipeline. Target: &lt;50ms total fraud overhead.</div>
+  </div>
+
+  <h3 style="margin-top: 2rem;">Login Flow (with Fraud Capture)</h3>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
+flowchart LR
+    A["User logs in"] --> B["Capture IP + Device FP + Geo"]
+    B --> C["Persist LoginEvent"]
+    C --> D{"Blocked?"}
+    D -->|Yes| E["REJECT login"]
+    D -->|No| F{"New device?"}
+    F -->|Yes| G["Create alert<br/><i>async, don't block</i>"]
+    F -->|No| H["Check multi-account<br/><i>same IP/device, diff user</i>"]
+    G --> I["Issue JWT"]
+    H -->|Suspicious| J["Create FraudAlert"]
+    H -->|Clear| I
+    J --> I
+
+    style E fill:#7f1d1d,color:#fff,stroke:#ef4444
+    style G fill:#78350f,color:#fff,stroke:#f97316
+    style J fill:#78350f,color:#fff,stroke:#f97316
+    </div>
+    <div class="diagram-caption">Every login captures context. Alerts are async and don't block the user.</div>
+  </div>
+</section>
+
+<!-- Section: Tech Stack -->
+<section id="tech">
+  <h2>Recommended Tech Stack</h2>
+  <p>Production-proven components. All decisions need team approval.</p>
+
+  <div class="tech-grid">
+    <div class="tech-item">
+      <div class="tech-icon">&#128270;</div>
+      <div>
+        <div class="tech-name">Fingerprint.com Pro</div>
+        <div class="tech-desc">99.5% accuracy, survives incognito, server-side. Open-source FingerprintJS NOT production-grade for adversarial use.</div>
+      </div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-icon">&#127760;</div>
+      <div>
+        <div class="tech-name">IPQualityScore</div>
+        <div class="tech-desc">Best proxy/VPN/TOR detection API. Real-time scoring with residential proxy detection.</div>
+      </div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-icon">&#128205;</div>
+      <div>
+        <div class="tech-name">MaxMind GeoIP2</div>
+        <div class="tech-desc">Self-hosted DB for bulk geo lookups. ~90% city accuracy. No API latency.</div>
+      </div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-icon">&#128293;</div>
+      <div>
+        <div class="tech-name">Redis (existing)</div>
+        <div class="tech-desc">Risk cache, velocity counters, IP sets, blocked entities. Sub-millisecond reads.</div>
+      </div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-icon">&#128451;</div>
+      <div>
+        <div class="tech-name">PostgreSQL + Prisma (existing)</div>
+        <div class="tech-desc">LoginEvent, BetContext, FraudAlert, FraudCase, BlockedEntity models.</div>
+      </div>
+    </div>
+    <div class="tech-item">
+      <div class="tech-icon">&#128200;</div>
+      <div>
+        <div class="tech-name">XGBoost / LightGBM (Phase 4)</div>
+        <div class="tech-desc">ML risk scoring. &lt;10ms inference. Best accuracy/latency tradeoff for tabular fraud data.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Phased Rollout -->
+<section id="phases">
+  <h2>Implementation Phases</h2>
+  <p>Each phase delivers value independently. No phase depends on a later phase.</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--red);"></div>
+      <div class="timeline-content">
+        <div class="phase-tag">Phase 0 &mdash; Immediate</div>
+        <h4>Security Fix</h4>
+        <ul>
+          <li>Fix auth.ts OR-based email lookup vulnerability</li>
+          <li>Require explicit confirmation for email-only account matches</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--blue);"></div>
+      <div class="timeline-content">
+        <div class="phase-tag">Phase 1 &mdash; Tracer Bullet (Week 1-2)</div>
+        <h4>IP/Device Capture + Admin Alert Queue</h4>
+        <ul>
+          <li>Express middleware: capture IP + user-agent on every request</li>
+          <li>Frontend: integrate Fingerprint.com SDK, send device FP</li>
+          <li>LoginEvent + BetContext Prisma models</li>
+          <li>FraudAlert model + alertService</li>
+          <li>One detection rule: same-IP multi-user alert</li>
+          <li>/admin/fraud page with alert list</li>
+          <li>WebSocket fraud:alert:new for real-time updates</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--purple);"></div>
+      <div class="timeline-content">
+        <div class="phase-tag">Phase 2 &mdash; Risk Scoring + Blocking (Week 2-3)</div>
+        <h4>Score Every Bet, Block Flagged Entities</h4>
+        <ul>
+          <li>fraudDetectionService.ts &mdash; risk scoring engine with configurable weights</li>
+          <li>BlockedEntity model &mdash; block IPs, devices, users, agents</li>
+          <li>Velocity limits (Redis sorted sets, sliding windows)</li>
+          <li>Fraud middleware injected before orderService</li>
+          <li>/admin/fraud/blocked &mdash; manage blocked entities</li>
+          <li>/admin/fraud/rules &mdash; configure thresholds</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--orange);"></div>
+      <div class="timeline-content">
+        <div class="phase-tag">Phase 3 &mdash; Correlation + Cases (Week 3-5)</div>
+        <h4>Cross-User Patterns, Investigation Tools</h4>
+        <ul>
+          <li>fraudCorrelationService.ts &mdash; background bet correlation</li>
+          <li>FraudCase model &mdash; group alerts into investigations</li>
+          <li>/admin/fraud/cases &mdash; case management with full user view</li>
+          <li>Agent-punter IP correlation alerts</li>
+          <li>Courtsiding detection (venue geofencing + event timing)</li>
+          <li>Win rate anomaly detection (post-settlement)</li>
+          <li>Cancel pattern tracking</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--cyan);"></div>
+      <div class="timeline-content">
+        <div class="phase-tag">Phase 4 &mdash; Market Signals (Month 2)</div>
+        <h4>Exchange Data Monitoring</h4>
+        <ul>
+          <li>marketSignalService.ts &mdash; tap into BetfairCache stream</li>
+          <li>Redis time-series for LTP + volume</li>
+          <li>Steam move detection (&gt;15% price change in &lt;2min)</li>
+          <li>Volume spike detection (&gt;3x normal in 30min)</li>
+          <li>Bet-to-price correlation (insider signal)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--muted);"></div>
+      <div class="timeline-content">
+        <div class="phase-tag">Phase 5 &mdash; ML / Advanced (Month 3+)</div>
+        <h4>Machine Learning + Compliance</h4>
+        <ul>
+          <li>XGBoost/LightGBM risk model trained on historical data</li>
+          <li>AdminAuditLog &mdash; full admin action trail</li>
+          <li>Sharp user auto-detection (replaces manual-only)</li>
+          <li>Behavioral fingerprinting (betting profile similarity)</li>
+          <li>IBIA/Sportradar feed integration</li>
+          <li>Daily/weekly fraud reports</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Compliance -->
+<section id="compliance">
+  <h2>2026 Regulatory Landscape</h2>
+  <p>Key regulations driving fraud detection requirements. Updated March 2026.</p>
+
+  <div class="card-grid">
+    <div class="card">
+      <h4>SAFE Bet Act (US)</h4>
+      <p>Reintroduced 119th Congress. Max 5 deposits/24h. National self-exclusion via SAMHSA. 5-year record retention. SAR reporting to DOJ + state regulators simultaneously. <strong>Not yet passed</strong> but shapes industry standards.</p>
+    </div>
+    <div class="card">
+      <h4>GLI-GSF (NEW)</h4>
+      <p>First gaming-specific cybersecurity standard. 5 modules released Oct 2025. Replaces GLI-19/GLI-33 security appendices. Covers online gaming controls, vendor controls, and technical security assessments.</p>
+    </div>
+    <div class="card">
+      <h4>UKGC Financial Checks</h4>
+      <p>Now standard practice: &gt;150 GBP/30d triggers affordability check. 97% completed "frictionlessly." AI-generated document fraud flagged as growing concern.</p>
+    </div>
+    <div class="card">
+      <h4>IBIA Mission 2030</h4>
+      <p>300 suspicious alerts in 2025 (29% increase). Football (110) and tennis (74) most flagged. Global MAP monitors $300B+ turnover across 80+ sports.</p>
+    </div>
+    <div class="card">
+      <h4>Player Prop Crackdown</h4>
+      <p>17+ states restrict college player props. NY actively re-examining all game-specific player props. Sen. Schatz preparing 2026 federal bill. MLB nationwide plan with FanDuel/DraftKings.</p>
+    </div>
+    <div class="card">
+      <h4>Sportradar AI</h4>
+      <p>AI-based detections up 56% YoY. FIFA partnership extended to 2031. UFDS monitors 1M+ events across 70 sports. 99.5% of events clean.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Feature Approvals -->
+<section id="features">
+  <h2>Feature Approval Checklist</h2>
+  <p>Each feature needs team approval before implementation. Review, discuss, and decide.</p>
+
+  <div class="approval-grid">
+    <div class="approval-item" style="border-left: 3px solid var(--red);">
+      <h4>&#9888; Fix Auth Email Vulnerability</h4>
+      <p>Change auth.ts OR-based lookup to require explicit confirmation for email-only matches. Prevents account linking attacks.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--blue);">
+      <h4>&#128270; Fingerprint.com Pro Integration</h4>
+      <p>Browser-side SDK for device fingerprinting. Sends visitorId with every bet. 99.5% accuracy. Paid service &mdash; pricing TBD.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--blue);">
+      <h4>&#127760; IPQualityScore for VPN/Proxy Detection</h4>
+      <p>API-based IP intelligence. Detects VPN, proxy, TOR, residential proxies. Real-time scoring. Paid service.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--blue);">
+      <h4>&#128205; MaxMind GeoIP2 (Self-Hosted)</h4>
+      <p>Local GeoIP database for country/city lookups. ~90% city accuracy. No API latency. Free tier available (GeoLite2).</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--blue);">
+      <h4>&#128466; Login Event Tracking</h4>
+      <p>Persist IP, device FP, geo on every login. Enables impossible travel detection, new device alerts, multi-account correlation.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--blue);">
+      <h4>&#128466; Bet Context Capture</h4>
+      <p>Persist IP, device FP, geo, risk score on every bet. Audit trail for every wager with fraud metadata.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--purple);">
+      <h4>&#128202; Risk Scoring Engine</h4>
+      <p>0-100 composite score on every bet. 8 weighted signals. ACCEPT/MONITOR/FRICTION/DECLINE actions. &lt;50ms latency budget.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--purple);">
+      <h4>&#9889; Velocity Limits</h4>
+      <p>Per-user: $5K/hour, 30 bets/hour. Per-agent-tree: $50K/hour, 500 bets/hour. Redis sliding windows. Configurable by admin.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--purple);">
+      <h4>&#128683; Blocked Entity System</h4>
+      <p>Block IPs, devices, users, agents. Hard block (reject), soft block (allow+flag), warn. Checked on every request.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--purple);">
+      <h4>&#128187; Admin Fraud Dashboard</h4>
+      <p>Alert queue, case management, blocked entities, rules configuration. Real-time WebSocket updates. 4 pages.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--orange);">
+      <h4>&#128101; Cross-User Correlation</h4>
+      <p>Background job detecting correlated bets: same fixture, short time window, same/different agents. Ring betting detection.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--orange);">
+      <h4>&#127951; Courtsiding Detection</h4>
+      <p>Venue geofencing (IP geo vs fixture venue). Bet-event timing correlation for cricket (Roanuz ball-by-ball data). Regulatory requirement.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--cyan);">
+      <h4>&#128200; Market Signal Monitoring</h4>
+      <p>Tap BetfairCache stream for LTP/volume time-series. Detect steam moves (&gt;15% in &lt;2min), volume spikes (&gt;3x in 30min).</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--cyan);">
+      <h4>&#128209; Admin Audit Log</h4>
+      <p>Log every admin action: balance adjustments, user blocks, order voids. Previous/new state captured. 5-year retention.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--muted);">
+      <h4>&#129302; ML Risk Model (Future)</h4>
+      <p>XGBoost/LightGBM trained on historical data after 2-3 months. Replaces rule-based scoring. Requires labeled fraud/legit dataset.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+
+    <div class="approval-item" style="border-left: 3px solid var(--muted);">
+      <h4>&#128200; IBIA / Sportradar Integration (Future)</h4>
+      <p>Subscribe to integrity monitoring feeds. Flag bets on suspicious matches. Industry standard for regulated markets.</p>
+      <div class="vote"><span class="vote-btn vote-yes">APPROVE</span><span class="vote-btn vote-no">REJECT</span><span class="vote-btn vote-later">DEFER</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Section: Data Models -->
+<section id="models">
+  <h2>Data Models — Reuse + Extend</h2>
+  <p>We reuse 4 existing B-Book v3 schemas and add 6 new models. No duplicate data stores.</p>
+
+  <div class="card-grid" style="margin-bottom: 1.5rem;">
+    <div class="card" style="border-left: 3px solid var(--green);">
+      <h4 style="color: var(--green);">Reuse from B-Book v3</h4>
+      <ul style="list-style:none; font-size:0.85rem; color:var(--muted);">
+        <li>&#10003; <strong>V3DeviceFingerprint</strong> — device tracking</li>
+        <li>&#10003; <strong>V3IpAccessLog</strong> — IP-to-user mapping</li>
+        <li>&#10003; <strong>V3Alert</strong> — alert pipeline (extend alert types)</li>
+        <li>&#10003; <strong>V3UserClassification</strong> — risk classification</li>
+        <li>&#10003; <strong>V3ClvEntry</strong> — closing line value data</li>
+        <li>&#10003; <strong>V3PaymentMethod</strong> — payment overlap</li>
+        <li>&#10003; <strong>SharpUser</strong> — sharp user list</li>
+        <li>&#10003; <strong>sharpDetection.ts</strong> — 5-pillar scoring</li>
+        <li>&#10003; <strong>collusionDetection.ts</strong> — agent monitoring</li>
+        <li>&#10003; <strong>filterEngine.ts</strong> — routing decisions</li>
+        <li>&#10003; <strong>alerting.ts</strong> — Slack/Telegram dispatch</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left: 3px solid var(--blue);">
+      <h4 style="color: var(--blue);">New Models to Add</h4>
+      <ul style="list-style:none; font-size:0.85rem; color:var(--muted);">
+        <li>&#43; <strong>LoginEvent</strong> — login IP/device/geo tracking</li>
+        <li>&#43; <strong>BetContext</strong> — per-bet fraud metadata</li>
+        <li>&#43; <strong>FraudCase</strong> — investigation case mgmt</li>
+        <li>&#43; <strong>BlockedEntity</strong> — IP/device/user/agent blocks</li>
+        <li>&#43; <strong>BetCorrelation</strong> — cross-user patterns</li>
+        <li>&#43; <strong>AdminAuditLog</strong> — admin action trail</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
+erDiagram
+    User ||--o{ LoginEvent : "has"
+    User ||--o{ V3DeviceFingerprint : "has (existing)"
+    User ||--o{ V3IpAccessLog : "has (existing)"
+    User ||--o{ BetContext : "has"
+    User ||--o{ V3Alert : "has (existing)"
+    Order ||--|| BetContext : "has"
+    FraudCase ||--o{ V3Alert : "contains"
+
+    LoginEvent {
+        string userId
+        string ipAddress
+        string deviceFingerprint
+        string geoCountry
+        string geoCity
+        int riskScore
+        datetime createdAt
+    }
+
+    BetContext {
+        string orderId
+        string ipAddress
+        string deviceFingerprint
+        int riskScore
+        string riskLevel
+        json riskSignals
+        string recommendation
+    }
+
+    FraudCase {
+        string title
+        string severity
+        string status
+        string assignedTo
+        string actionTaken
+    }
+
+    BlockedEntity {
+        string entityType
+        string entityValue
+        string blockType
+        string reason
+        datetime expiresAt
+    }
+
+    BetCorrelation {
+        string correlationType
+        string fixtureId
+        float correlationScore
+        int timeWindowSec
+    }
+
+    AdminAuditLog {
+        string adminUserId
+        string action
+        string targetType
+        json previousState
+        json newState
+    }
+    </div>
+    <div class="diagram-caption">Green = reuse existing B-Book v3 models. Blue = new models. No duplicate schemas.</div>
+  </div>
+</section>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="container">
+    <p>Fraud Detection System Design &mdash; Hannibal Platform &mdash; March 2026</p>
+    <p style="margin-top: 0.25rem;">Created by Bhargav Veepuri &bull; Review required from all team members before implementation</p>
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      darkMode: true,
+      background: '#12121a',
+      primaryColor: '#6366f1',
+      primaryTextColor: '#e5e5ef',
+      primaryBorderColor: '#4f46e5',
+      lineColor: '#555',
+      secondaryColor: '#1a1a28',
+      tertiaryColor: '#12121a',
+      fontSize: '14px',
+    },
+    flowchart: { htmlLabels: true, curve: 'basis' },
+    er: { useMaxWidth: true },
+  });
+</script>
+
+</body>
+</html>
