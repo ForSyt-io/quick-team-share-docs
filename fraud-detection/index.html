@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fraud Detection System — Hannibal</title>
-  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
   <style>
     :root {
       --bg: #0a0a0f;
@@ -87,8 +86,80 @@
 
     /* Diagram */
     .diagram-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; overflow-x: auto; }
-    .diagram-wrap .mermaid { display: flex; justify-content: center; }
     .diagram-caption { text-align: center; font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem; }
+
+    /* Block Diagram */
+    .block-diagram { display: grid; gap: 1.5rem; }
+    .block-group { border: 2px solid var(--border); border-radius: 10px; padding: 1rem; }
+    .block-group-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    .block-items { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .block-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+    .block-item strong { display: block; font-size: 0.8rem; }
+    .block-item em { font-size: 0.7rem; color: var(--muted); font-style: normal; }
+
+    /* Connection List */
+    .conn-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+    .conn { font-size: 0.72rem; color: var(--muted); background: var(--surface2); padding: 0.25rem 0.6rem; border-radius: 6px; }
+    .conn span { color: var(--accent2); }
+
+    /* Pipeline */
+    .pipeline { display: flex; align-items: stretch; gap: 0; margin: 0 auto; max-width: 100%; }
+    .pipeline-step { flex: 1; text-align: center; padding: 1rem 0.75rem; position: relative; min-width: 140px; }
+    .pipeline-step-inner { background: var(--surface2); border-radius: 10px; padding: 1rem 0.75rem; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px solid var(--border); }
+    .pipeline-arrow { display: flex; align-items: center; justify-content: center; width: 32px; flex-shrink: 0; color: var(--muted); font-size: 1.2rem; }
+    .pipeline-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.25rem; }
+    .pipeline-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.15rem; }
+    .pipeline-meta { font-size: 0.7rem; color: var(--muted); }
+
+    /* Flowchart */
+    .flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .flow-h { display: flex; align-items: flex-start; gap: 0; flex-wrap: wrap; justify-content: center; }
+    .flow-step { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 0.65rem 1rem; text-align: center; min-width: 160px; max-width: 220px; }
+    .flow-step strong { font-size: 0.82rem; display: block; }
+    .flow-step em { font-size: 0.7rem; color: var(--muted); font-style: normal; }
+    .flow-decision { background: var(--surface2); border: 2px solid var(--accent); border-radius: 10px; padding: 0.6rem 1rem; text-align: center; min-width: 130px; transform: rotate(0deg); position: relative; }
+    .flow-decision::before { content: ''; position: absolute; inset: -2px; border: 2px solid var(--accent); border-radius: 10px; pointer-events: none; }
+    .flow-decision strong { font-size: 0.82rem; }
+    .flow-reject { background: #7f1d1d; border-color: var(--red); color: #fff; }
+    .flow-reject::before { border-color: var(--red); }
+    .flow-warn { background: #78350f; border-color: var(--orange); color: #fff; }
+    .flow-warn::before { border-color: var(--orange); }
+    .flow-pass { background: #14532d; border-color: var(--green); color: #fff; }
+    .flow-pass::before { border-color: var(--green); }
+    .flow-score { background: #312e81; border-color: var(--accent); color: #fff; }
+    .flow-score::before { border-color: var(--accent); }
+    .flow-arrow { display: flex; flex-direction: column; align-items: center; color: var(--muted); font-size: 0.65rem; padding: 0.15rem 0; }
+    .flow-arrow-v::after { content: ''; display: block; width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--muted); margin-top: 2px; }
+    .flow-arrow-h { display: flex; align-items: center; color: var(--muted); font-size: 0.65rem; padding: 0 0.2rem; }
+    .flow-arrow-h::after { content: ''; display: block; width: 0; height: 0; border-top: 6px solid transparent; border-bottom: 6px solid transparent; border-left: 8px solid var(--muted); margin-left: 4px; }
+    .flow-branch { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; align-items: flex-start; }
+    .flow-branch-item { display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .flow-branch-label { font-size: 0.65rem; color: var(--muted); margin-bottom: 0.15rem; }
+    .flow-line { width: 2px; height: 16px; background: var(--border); }
+    .flow-line-h { height: 2px; width: 24px; background: var(--border); align-self: center; }
+
+    /* Arch Layers */
+    .arch-layers { display: grid; grid-template-columns: 1fr 200px; gap: 1rem; }
+    .arch-main { display: flex; flex-direction: column; gap: 0.75rem; }
+    .arch-side { display: flex; flex-direction: column; gap: 0.75rem; }
+    .arch-layer { border-radius: 10px; padding: 0.85rem 1rem; }
+    .arch-layer-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+    .arch-layer-items { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .arch-layer-item { background: rgba(0,0,0,0.3); border-radius: 6px; padding: 0.35rem 0.6rem; font-size: 0.75rem; }
+    .arch-layer-item em { font-size: 0.65rem; color: inherit; opacity: 0.7; font-style: normal; display: block; }
+    .arch-arrow { text-align: center; color: var(--muted); font-size: 0.75rem; padding: 0.1rem 0; }
+    @media (max-width: 700px) { .arch-layers { grid-template-columns: 1fr; } }
+
+    /* Entity Cards */
+    .entity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
+    .entity-card { background: var(--surface2); border-radius: 10px; padding: 0.85rem 1rem; border: 1px solid var(--border); }
+    .entity-card h5 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .entity-card ul { list-style: none; }
+    .entity-card li { font-size: 0.72rem; color: var(--muted); padding: 0.12rem 0; display: flex; gap: 0.4rem; }
+    .entity-card li span { color: var(--accent2); font-family: monospace; font-size: 0.68rem; }
+    .entity-rel { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+    .entity-rel-item { font-size: 0.75rem; color: var(--muted); padding: 0.2rem 0; }
+    .entity-rel-item strong { color: var(--text); }
 
     /* Phase Timeline */
     .timeline { position: relative; padding-left: 2rem; }
@@ -134,6 +205,8 @@
       .hero h1 { font-size: 1.75rem; }
       .card-grid { grid-template-columns: 1fr; }
       .stat-row { grid-template-columns: repeat(2, 1fr); }
+      .pipeline { flex-direction: column; align-items: center; }
+      .pipeline-arrow { transform: rotate(90deg); width: auto; height: 32px; }
     }
   </style>
 </head>
@@ -229,53 +302,54 @@
   <p>We already have a solid foundation from the B-Book v3 system. The fraud detection system builds directly on top of it.</p>
 
   <div class="diagram-wrap">
-    <div class="mermaid">
-%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
-graph TB
-    subgraph NEW["NEW — Fraud Detection Layer"]
-        direction TB
-        N1["fraudDetectionService.ts<br/><i>Risk scoring engine</i>"]
-        N2["betContextService.ts<br/><i>IP/device/geo middleware</i>"]
-        N3["fraudBlockingService.ts<br/><i>IP/device/user blocks</i>"]
-        N4["fraudCorrelationService.ts<br/><i>Cross-user patterns</i>"]
-        N5["marketSignalService.ts<br/><i>Steam/volume detection</i>"]
-        N6["Admin Fraud Dashboard<br/><i>4 new pages</i>"]
-    end
-
-    subgraph EXISTS["EXISTS — B-Book v3 (Reuse)"]
-        direction TB
-        E1["sharpDetection.ts<br/><i>5-pillar scoring (877 lines)</i>"]
-        E2["collusionDetection.ts<br/><i>Agent monitoring (889 lines)</i>"]
-        E3["filterEngine.ts<br/><i>Sharp→exchange routing</i>"]
-        E4["alerting.ts<br/><i>P1-P3 + Slack/Telegram</i>"]
-        E5["noNewRisk.ts<br/><i>Risk threshold blocking</i>"]
-        E6["exposureLedger.ts<br/><i>PLATFORM_EVENT_CAP</i>"]
-    end
-
-    subgraph SCHEMA["EXISTS — Prisma Models (Reuse)"]
-        direction LR
-        S1["V3DeviceFingerprint"]
-        S2["V3IpAccessLog"]
-        S3["V3Alert"]
-        S4["V3UserClassification"]
-        S5["V3ClvEntry"]
-        S6["V3PaymentMethod"]
-        S7["SharpUser"]
-    end
-
-    N1 -->|"reads sharp score"| E1
-    N1 -->|"reads collusion score"| E2
-    N1 -->|"extends alert types"| E4
-    N3 -->|"integrates with"| E3
-    N4 -->|"queries"| S1
-    N4 -->|"queries"| S2
-    N1 -->|"queries"| S3
-    N2 -->|"writes to"| S1
-    N2 -->|"writes to"| S2
-
-    style NEW fill:#1a1a28,stroke:#3b82f6,stroke-width:2px
-    style EXISTS fill:#1a1a28,stroke:#22c55e,stroke-width:2px
-    style SCHEMA fill:#1a1a28,stroke:#a855f7,stroke-width:2px
+    <div class="block-diagram" style="grid-template-columns: 1fr 1fr 1fr; align-items: start;">
+      <!-- NEW column -->
+      <div class="block-group" style="border-color: var(--blue);">
+        <div class="block-group-title" style="color: var(--blue);">NEW &mdash; Fraud Detection Layer</div>
+        <div class="block-items" style="flex-direction: column;">
+          <div class="block-item" style="border-color: #3b82f633;"><strong>fraudDetectionService.ts</strong><em>Risk scoring engine</em></div>
+          <div class="block-item" style="border-color: #3b82f633;"><strong>betContextService.ts</strong><em>IP/device/geo middleware</em></div>
+          <div class="block-item" style="border-color: #3b82f633;"><strong>fraudBlockingService.ts</strong><em>IP / Device / User blocks</em></div>
+          <div class="block-item" style="border-color: #3b82f633;"><strong>fraudCorrelationService.ts</strong><em>Cross-user patterns</em></div>
+          <div class="block-item" style="border-color: #3b82f633;"><strong>marketSignalService.ts</strong><em>Steam / volume detection</em></div>
+          <div class="block-item" style="border-color: #3b82f633;"><strong>Admin Fraud Dashboard</strong><em>4 new pages</em></div>
+        </div>
+      </div>
+      <!-- EXISTS column -->
+      <div class="block-group" style="border-color: var(--green);">
+        <div class="block-group-title" style="color: var(--green);">EXISTS &mdash; B-Book v3 (Reuse)</div>
+        <div class="block-items" style="flex-direction: column;">
+          <div class="block-item" style="border-color: #22c55e33;"><strong>sharpDetection.ts</strong><em>5-pillar scoring (877 lines)</em></div>
+          <div class="block-item" style="border-color: #22c55e33;"><strong>collusionDetection.ts</strong><em>Agent monitoring (889 lines)</em></div>
+          <div class="block-item" style="border-color: #22c55e33;"><strong>filterEngine.ts</strong><em>Sharp &rarr; exchange routing</em></div>
+          <div class="block-item" style="border-color: #22c55e33;"><strong>alerting.ts</strong><em>P1-P3 + Slack/Telegram</em></div>
+          <div class="block-item" style="border-color: #22c55e33;"><strong>noNewRisk.ts</strong><em>Risk threshold blocking</em></div>
+          <div class="block-item" style="border-color: #22c55e33;"><strong>exposureLedger.ts</strong><em>PLATFORM_EVENT_CAP</em></div>
+        </div>
+      </div>
+      <!-- SCHEMA column -->
+      <div class="block-group" style="border-color: var(--purple);">
+        <div class="block-group-title" style="color: var(--purple);">EXISTS &mdash; Prisma Models (Reuse)</div>
+        <div class="block-items" style="flex-direction: column;">
+          <div class="block-item" style="border-color: #a855f733;"><strong>V3DeviceFingerprint</strong></div>
+          <div class="block-item" style="border-color: #a855f733;"><strong>V3IpAccessLog</strong></div>
+          <div class="block-item" style="border-color: #a855f733;"><strong>V3Alert</strong></div>
+          <div class="block-item" style="border-color: #a855f733;"><strong>V3UserClassification</strong></div>
+          <div class="block-item" style="border-color: #a855f733;"><strong>V3ClvEntry</strong></div>
+          <div class="block-item" style="border-color: #a855f733;"><strong>V3PaymentMethod</strong></div>
+          <div class="block-item" style="border-color: #a855f733;"><strong>SharpUser</strong></div>
+        </div>
+      </div>
+    </div>
+    <!-- Connections -->
+    <div class="conn-list">
+      <div class="conn"><span>fraudDetection</span> reads sharp score from <span>sharpDetection</span></div>
+      <div class="conn"><span>fraudDetection</span> reads collusion score from <span>collusionDetection</span></div>
+      <div class="conn"><span>fraudDetection</span> extends alert types in <span>alerting</span></div>
+      <div class="conn"><span>fraudBlocking</span> integrates with <span>filterEngine</span></div>
+      <div class="conn"><span>fraudCorrelation</span> queries <span>V3DeviceFingerprint</span> + <span>V3IpAccessLog</span></div>
+      <div class="conn"><span>betContext</span> writes to <span>V3DeviceFingerprint</span> + <span>V3IpAccessLog</span></div>
+      <div class="conn"><span>fraudDetection</span> queries <span>V3Alert</span></div>
     </div>
     <div class="diagram-caption">Blue = new services to build. Green = existing code we reuse. Purple = existing schemas we extend.</div>
   </div>
@@ -319,14 +393,14 @@ graph TB
       <tr>
         <td><strong>exposureLedger.ts</strong></td>
         <td>582</td>
-        <td>2-tier exposure tracking (Redis + PG). PLATFORM_EVENT_CAP for cross-agent syndicate detection. Aggregate retained liability across all agents per event.</td>
-        <td>PLATFORM_EVENT_CAP already detects one syndicate pattern. Fraud correlation engine extends this with timing + device + IP clustering.</td>
+        <td>2-tier exposure tracking. PLATFORM_EVENT_CAP for syndicate detection. Global/market/selection/user exposure limits.</td>
+        <td>Used for context: large exposure + fraud signals = higher risk score weighting.</td>
       </tr>
       <tr>
         <td><strong>V3DeviceFingerprint</strong></td>
         <td>schema</td>
-        <td>Stores: userId, deviceId, canvasHash, userAgent, screenResolution, timezone, webglHash, IP address.</td>
-        <td>Fraud middleware writes to this table on every login/bet. Correlation engine queries it for multi-account detection.</td>
+        <td>Stores: visitorId, userAgent, platform, screenResolution, timezone, webglRenderer, ipAddress, userId.</td>
+        <td>Fraud middleware writes device data here. Multi-account detection queries for same visitorId + different userId.</td>
       </tr>
       <tr>
         <td><strong>V3IpAccessLog</strong></td>
@@ -460,68 +534,72 @@ graph TB
   <p>Synchronous risk scoring on every bet, async correlation in background. Layers on top of existing B-Book v3. Reuses V3DeviceFingerprint, V3IpAccessLog, V3Alert, and V3UserClassification schemas.</p>
 
   <div class="diagram-wrap">
-    <div class="mermaid">
-%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'primaryBorderColor': '#4f46e5', 'lineColor': '#555', 'secondaryColor': '#1a1a28', 'tertiaryColor': '#12121a', 'edgeLabelBackground': '#12121a'}}}%%
-graph TB
-    subgraph Client["Browser / App"]
-        FP["Fingerprint.com SDK<br/>Device fingerprint on page load"]
-        GEO["Geolocation API<br/>GPS coordinates"]
-    end
-
-    subgraph API["Express API Layer"]
-        MW["Fraud Context Middleware<br/>IP + Device FP + Geo"]
-        AUTH["Auth Routes<br/>Login event capture"]
-        ORDERS["Order Routes<br/>Bet placement"]
-    end
-
-    subgraph Fraud["Fraud Detection Service"]
-        SCORE["Risk Scoring Engine<br/>0-100 score, &lt;50ms"]
-        BLOCK["Blocking Service<br/>IP / Device / User"]
-        ALERT["Alert Pipeline<br/>Create + Dispatch"]
-    end
-
-    subgraph Async["Async Workers"]
-        CORR["Correlation Engine<br/>Cross-user patterns"]
-        MKT["Market Signal Service<br/>Steam + Volume"]
-        WIN["Win Rate Monitor<br/>Post-settlement"]
-    end
-
-    subgraph Storage["Data Layer"]
-        REDIS["Redis<br/>Risk cache, velocity,<br/>IP sets, blocked entities"]
-        PG["PostgreSQL<br/>LoginEvent, BetContext,<br/>FraudAlert, FraudCase"]
-    end
-
-    subgraph Existing["Existing B-Book v3"]
-        SHARP["Sharp Detection<br/>5-pillar scoring"]
-        COLLUSION["Collusion Detection<br/>Agent monitoring"]
-        FILTER["Filter Engine<br/>Routing decisions"]
-    end
-
-    Client --> MW
-    MW --> AUTH
-    MW --> ORDERS
-    ORDERS --> SCORE
-    SCORE --> BLOCK
-    SCORE --> FILTER
-    SCORE --> ALERT
-    ORDERS -.-> CORR
-    ORDERS -.-> MKT
-    SCORE --> REDIS
-    ALERT --> PG
-    CORR --> PG
-    SHARP -.-> SCORE
-    COLLUSION -.-> SCORE
-    MKT -.-> ALERT
-    WIN -.-> ALERT
-
-    style Client fill:#1a1a28,stroke:#3b82f6
-    style API fill:#1a1a28,stroke:#6366f1
-    style Fraud fill:#1a1a28,stroke:#ef4444
-    style Async fill:#1a1a28,stroke:#f97316
-    style Storage fill:#1a1a28,stroke:#22c55e
-    style Existing fill:#1a1a28,stroke:#a855f7
+    <div class="arch-layers">
+      <div class="arch-main">
+        <!-- Client Layer -->
+        <div class="arch-layer" style="background: #3b82f615; border: 1px solid #3b82f644;">
+          <div class="arch-layer-title" style="color: var(--blue);">Client (Browser / App)</div>
+          <div class="arch-layer-items">
+            <div class="arch-layer-item" style="color: var(--blue);">Fingerprint.com SDK<em>Device fingerprint on page load</em></div>
+            <div class="arch-layer-item" style="color: var(--blue);">Geolocation API<em>GPS coordinates</em></div>
+          </div>
+        </div>
+        <div class="arch-arrow">&darr;</div>
+        <!-- API Layer -->
+        <div class="arch-layer" style="background: #6366f115; border: 1px solid #6366f144;">
+          <div class="arch-layer-title" style="color: var(--accent);">Express API Layer</div>
+          <div class="arch-layer-items">
+            <div class="arch-layer-item" style="color: var(--accent);">Fraud Context Middleware<em>IP + Device FP + Geo</em></div>
+            <div class="arch-layer-item" style="color: var(--accent);">Auth Routes<em>Login event capture</em></div>
+            <div class="arch-layer-item" style="color: var(--accent);">Order Routes<em>Bet placement</em></div>
+          </div>
+        </div>
+        <div class="arch-arrow">&darr;</div>
+        <!-- Fraud Layer -->
+        <div class="arch-layer" style="background: #ef444415; border: 2px solid #ef444466;">
+          <div class="arch-layer-title" style="color: var(--red);">Fraud Detection Service (NEW)</div>
+          <div class="arch-layer-items">
+            <div class="arch-layer-item" style="color: var(--red);">Risk Scoring Engine<em>0-100 score, &lt;50ms</em></div>
+            <div class="arch-layer-item" style="color: var(--red);">Blocking Service<em>IP / Device / User</em></div>
+            <div class="arch-layer-item" style="color: var(--red);">Alert Pipeline<em>Create + Dispatch</em></div>
+          </div>
+        </div>
+        <div class="arch-arrow">&darr; async</div>
+        <!-- Async Layer -->
+        <div class="arch-layer" style="background: #f9731615; border: 1px solid #f9731644;">
+          <div class="arch-layer-title" style="color: var(--orange);">Async Workers (Background)</div>
+          <div class="arch-layer-items">
+            <div class="arch-layer-item" style="color: var(--orange);">Correlation Engine<em>Cross-user patterns</em></div>
+            <div class="arch-layer-item" style="color: var(--orange);">Market Signal Service<em>Steam + Volume</em></div>
+            <div class="arch-layer-item" style="color: var(--orange);">Win Rate Monitor<em>Post-settlement</em></div>
+          </div>
+        </div>
+        <div class="arch-arrow">&darr;</div>
+        <!-- Storage Layer -->
+        <div class="arch-layer" style="background: #22c55e15; border: 1px solid #22c55e44;">
+          <div class="arch-layer-title" style="color: var(--green);">Data Layer</div>
+          <div class="arch-layer-items">
+            <div class="arch-layer-item" style="color: var(--green);">Redis<em>Risk cache, velocity, IP sets, blocked entities</em></div>
+            <div class="arch-layer-item" style="color: var(--green);">PostgreSQL<em>LoginEvent, BetContext, FraudAlert, FraudCase</em></div>
+          </div>
+        </div>
+      </div>
+      <!-- Sidebar: Existing -->
+      <div class="arch-side">
+        <div class="arch-layer" style="background: #a855f715; border: 2px solid #a855f744; height: 100%;">
+          <div class="arch-layer-title" style="color: var(--purple);">Existing B-Book v3</div>
+          <div class="arch-layer-items" style="flex-direction: column;">
+            <div class="arch-layer-item" style="color: var(--purple);">Sharp Detection<em>5-pillar scoring</em></div>
+            <div class="arch-layer-item" style="color: var(--purple);">Collusion Detection<em>Agent monitoring</em></div>
+            <div class="arch-layer-item" style="color: var(--purple);">Filter Engine<em>Routing decisions</em></div>
+          </div>
+          <div style="margin-top: 0.75rem; font-size: 0.65rem; color: var(--muted); border-top: 1px solid #a855f733; padding-top: 0.5rem;">
+            Feeds scores into Fraud Detection Service. No code changes needed.
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="diagram-caption">System architecture — new fraud layer (red) integrates with existing B-Book v3 (purple)</div>
+    <div class="diagram-caption">System architecture &mdash; new fraud layer (red) integrates with existing B-Book v3 (purple)</div>
   </div>
 </section>
 
@@ -531,20 +609,38 @@ graph TB
   <p>Each layer adds sophistication. Layer 1 runs on day 1. Layer 4 requires months of data.</p>
 
   <div class="diagram-wrap">
-    <div class="mermaid">
-%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
-graph LR
-    L1["Layer 1<br/><b>Static Gates</b><br/>Day 1 &bull; &lt;5ms"]
-    L2["Layer 2<br/><b>Risk Score</b><br/>Week 2 &bull; &lt;50ms"]
-    L3["Layer 3<br/><b>Async Detection</b><br/>Week 3-5 &bull; Background"]
-    L4["Layer 4<br/><b>ML / AI</b><br/>Month 3+ &bull; Batch"]
-
-    L1 --> L2 --> L3 --> L4
-
-    style L1 fill:#0f3460,color:#fff,stroke:#3b82f6
-    style L2 fill:#533483,color:#fff,stroke:#a855f7
-    style L3 fill:#7f1d1d,color:#fff,stroke:#ef4444
-    style L4 fill:#1a1a2e,color:#ccc,stroke:#555
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="pipeline-step-inner" style="border-color: var(--blue); background: #0f3460;">
+          <div class="pipeline-label">Layer 1</div>
+          <div class="pipeline-title" style="color: var(--blue);">Static Gates</div>
+          <div class="pipeline-meta">Day 1 &bull; &lt;5ms</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-inner" style="border-color: var(--purple); background: #533483;">
+          <div class="pipeline-label">Layer 2</div>
+          <div class="pipeline-title" style="color: var(--purple);">Risk Score</div>
+          <div class="pipeline-meta">Week 2 &bull; &lt;50ms</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-inner" style="border-color: var(--red); background: #7f1d1d;">
+          <div class="pipeline-label">Layer 3</div>
+          <div class="pipeline-title" style="color: var(--red);">Async Detection</div>
+          <div class="pipeline-meta">Week 3-5 &bull; Background</div>
+        </div>
+      </div>
+      <div class="pipeline-arrow">&rarr;</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-inner" style="border-color: var(--muted); background: #1a1a2e;">
+          <div class="pipeline-label">Layer 4</div>
+          <div class="pipeline-title" style="color: var(--muted);">ML / AI</div>
+          <div class="pipeline-meta">Month 3+ &bull; Batch</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -602,67 +698,226 @@ graph LR
   <h2>Bet Placement Flow (with Fraud Checks)</h2>
 
   <div class="diagram-wrap">
-    <div class="mermaid">
-%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
-flowchart TD
-    A["User clicks Place Bet"] --> B["Fraud Context Middleware<br/><i>Extract IP, Device FP, Geo</i>"]
-    B --> C{"Blocked Entity<br/>Check"}
-    C -->|"IP/Device/User blocked"| REJ1["REJECT 403"]
-    C -->|"Clear"| D{"Velocity<br/>Check"}
-    D -->|"Over limit"| REJ2["REJECT + FLAG"]
-    D -->|"OK"| E{"Geolocation<br/>Gate"}
-    E -->|"Blocked country / TOR"| REJ3["REJECT + ALERT"]
-    E -->|"VPN detected"| FLAG1["FLAG + continue"]
-    E -->|"Clear"| F["Risk Scoring Engine"]
-    FLAG1 --> F
-    F --> G{"Score?"}
-    G -->|"80+"| REJ4["DECLINE + ESCALATE"]
-    G -->|"60-80"| CAP["CAP stake 25% + FLAG"]
-    G -->|"30-60"| MON["MONITOR"]
-    G -->|"0-30"| PASS["PASS"]
-    CAP --> H
-    MON --> H
-    PASS --> H
-    H["Existing Order Pipeline<br/><i>Validate, B-Book route, Exchange</i>"]
-    H --> I["Async Post-Bet"]
-    I --> J["Correlation Engine"]
-    I --> K["Update Velocity Counters"]
-    I --> L["Persist BetContext"]
+    <svg viewBox="0 0 720 680" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;display:block;margin:0 auto;">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/></marker>
+        <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444"/></marker>
+      </defs>
+      <style>
+        .f-box { fill: #1a1a28; stroke: #2a2a3a; stroke-width: 1.5; rx: 8; }
+        .f-decision { fill: #1a1a28; stroke: #6366f1; stroke-width: 2; }
+        .f-reject { fill: #7f1d1d; stroke: #ef4444; stroke-width: 1.5; rx: 8; }
+        .f-warn { fill: #78350f; stroke: #f97316; stroke-width: 1.5; rx: 8; }
+        .f-pass { fill: #14532d; stroke: #22c55e; stroke-width: 1.5; rx: 8; }
+        .f-score { fill: #312e81; stroke: #6366f1; stroke-width: 2; rx: 8; }
+        .f-text { fill: #e5e5ef; font-family: Inter, sans-serif; font-size: 11px; text-anchor: middle; }
+        .f-text-s { fill: #888899; font-family: Inter, sans-serif; font-size: 9px; text-anchor: middle; }
+        .f-label { fill: #888899; font-family: Inter, sans-serif; font-size: 9px; }
+      </style>
 
-    style REJ1 fill:#7f1d1d,color:#fff,stroke:#ef4444
-    style REJ2 fill:#7f1d1d,color:#fff,stroke:#ef4444
-    style REJ3 fill:#7f1d1d,color:#fff,stroke:#ef4444
-    style REJ4 fill:#7f1d1d,color:#fff,stroke:#ef4444
-    style FLAG1 fill:#78350f,color:#fff,stroke:#f97316
-    style CAP fill:#78350f,color:#fff,stroke:#f97316
-    style PASS fill:#14532d,color:#fff,stroke:#22c55e
-    style F fill:#312e81,color:#fff,stroke:#6366f1
-    style H fill:#1a1a28,color:#e5e5ef,stroke:#555
-    </div>
+      <!-- Step 1: User clicks Place Bet -->
+      <rect class="f-box" x="250" y="10" width="220" height="36"/>
+      <text class="f-text" x="360" y="33">User clicks Place Bet</text>
+
+      <line x1="360" y1="46" x2="360" y2="66" stroke="#555" marker-end="url(#arrow)"/>
+
+      <!-- Step 2: Fraud Context Middleware -->
+      <rect class="f-box" x="230" y="66" width="260" height="42"/>
+      <text class="f-text" x="360" y="84">Fraud Context Middleware</text>
+      <text class="f-text-s" x="360" y="98">Extract IP, Device FP, Geo</text>
+
+      <line x1="360" y1="108" x2="360" y2="128" stroke="#555" marker-end="url(#arrow)"/>
+
+      <!-- Decision: Blocked Entity -->
+      <polygon class="f-decision" points="360,128 460,158 360,188 260,158"/>
+      <text class="f-text" x="360" y="156" style="font-size:10px;">Blocked Entity?</text>
+
+      <!-- Blocked -> REJECT -->
+      <line x1="460" y1="158" x2="580" y2="158" stroke="#ef4444" marker-end="url(#arrow-red)"/>
+      <rect class="f-reject" x="580" y="143" width="120" height="30"/>
+      <text class="f-text" x="640" y="162">REJECT 403</text>
+      <text class="f-label" x="500" y="152">blocked</text>
+
+      <!-- Clear -->
+      <line x1="360" y1="188" x2="360" y2="208" stroke="#555" marker-end="url(#arrow)"/>
+      <text class="f-label" x="370" y="202">clear</text>
+
+      <!-- Decision: Velocity -->
+      <polygon class="f-decision" points="360,208 460,238 360,268 260,238"/>
+      <text class="f-text" x="360" y="236" style="font-size:10px;">Velocity Check</text>
+
+      <!-- Over limit -> REJECT -->
+      <line x1="460" y1="238" x2="580" y2="238" stroke="#ef4444" marker-end="url(#arrow-red)"/>
+      <rect class="f-reject" x="580" y="223" width="120" height="30"/>
+      <text class="f-text" x="640" y="242">REJECT + FLAG</text>
+      <text class="f-label" x="500" y="232">over limit</text>
+
+      <!-- OK -->
+      <line x1="360" y1="268" x2="360" y2="288" stroke="#555" marker-end="url(#arrow)"/>
+      <text class="f-label" x="370" y="282">ok</text>
+
+      <!-- Decision: Geolocation -->
+      <polygon class="f-decision" points="360,288 460,318 360,348 260,318"/>
+      <text class="f-text" x="360" y="316" style="font-size:10px;">Geolocation Gate</text>
+
+      <!-- Blocked country -> REJECT -->
+      <line x1="460" y1="318" x2="580" y2="318" stroke="#ef4444" marker-end="url(#arrow-red)"/>
+      <rect class="f-reject" x="580" y="303" width="120" height="30"/>
+      <text class="f-text" x="640" y="322">REJECT + ALERT</text>
+      <text class="f-label" x="490" y="312">blocked / TOR</text>
+
+      <!-- VPN detected -> FLAG -->
+      <line x1="260" y1="318" x2="120" y2="318" stroke="#f97316"/>
+      <rect class="f-warn" x="20" y="303" width="100" height="30" rx="8"/>
+      <text class="f-text" x="70" y="322" style="font-size:10px;">FLAG + go</text>
+      <text class="f-label" x="170" y="312">VPN</text>
+      <line x1="70" y1="333" x2="70" y2="420" stroke="#f97316"/>
+      <line x1="70" y1="420" x2="310" y2="420" stroke="#555" marker-end="url(#arrow)"/>
+
+      <!-- Clear -->
+      <line x1="360" y1="348" x2="360" y2="392" stroke="#555" marker-end="url(#arrow)"/>
+      <text class="f-label" x="370" y="374">clear</text>
+
+      <!-- Risk Scoring Engine -->
+      <rect class="f-score" x="230" y="392" width="260" height="42"/>
+      <text class="f-text" x="360" y="410" style="fill:#fff;">Risk Scoring Engine</text>
+      <text class="f-text-s" x="360" y="424" style="fill:#aaa;">0-100 composite score</text>
+
+      <line x1="360" y1="434" x2="360" y2="454" stroke="#555" marker-end="url(#arrow)"/>
+
+      <!-- Score branching -->
+      <polygon class="f-decision" points="360,454 440,478 360,502 280,478"/>
+      <text class="f-text" x="360" y="481" style="font-size:10px;">Score?</text>
+
+      <!-- 80+ -> DECLINE -->
+      <line x1="440" y1="478" x2="580" y2="478" stroke="#ef4444" marker-end="url(#arrow-red)"/>
+      <rect class="f-reject" x="580" y="463" width="130" height="30"/>
+      <text class="f-text" x="645" y="482">DECLINE + ESC</text>
+      <text class="f-label" x="500" y="472">80+</text>
+
+      <!-- 60-80 -> CAP -->
+      <line x1="360" y1="502" x2="360" y2="522" stroke="#555" marker-end="url(#arrow)"/>
+
+      <!-- Branch: 60-80, 30-60, 0-30 -->
+      <rect class="f-warn" x="100" y="522" width="130" height="30" rx="8"/>
+      <text class="f-text" x="165" y="541" style="font-size:10px;">CAP 25% + FLAG</text>
+      <text class="f-label" x="115" y="516">60-80</text>
+      <line x1="280" y1="478" x2="165" y2="478" stroke="#f97316"/>
+      <line x1="165" y1="478" x2="165" y2="522" stroke="#f97316"/>
+
+      <rect class="f-box" x="260" y="522" width="100" height="30"/>
+      <text class="f-text" x="310" y="541">MONITOR</text>
+      <text class="f-label" x="305" y="516">30-60</text>
+
+      <rect class="f-pass" x="390" y="522" width="80" height="30" rx="8"/>
+      <text class="f-text" x="430" y="541">PASS</text>
+      <text class="f-label" x="415" y="516">0-30</text>
+
+      <!-- All converge -->
+      <line x1="165" y1="552" x2="165" y2="575" stroke="#555"/>
+      <line x1="310" y1="552" x2="310" y2="575" stroke="#555"/>
+      <line x1="430" y1="552" x2="430" y2="575" stroke="#555"/>
+      <line x1="165" y1="575" x2="430" y2="575" stroke="#555"/>
+      <line x1="300" y1="575" x2="300" y2="590" stroke="#555" marker-end="url(#arrow)"/>
+
+      <!-- Existing Order Pipeline -->
+      <rect class="f-box" x="170" y="590" width="260" height="36" style="stroke:#555;"/>
+      <text class="f-text" x="300" y="606" style="fill:#aaa;">Existing Order Pipeline</text>
+      <text class="f-text-s" x="300" y="618">Validate, B-Book route, Exchange</text>
+
+      <line x1="300" y1="626" x2="300" y2="646" stroke="#555" marker-end="url(#arrow)"/>
+
+      <!-- Async post-bet -->
+      <rect class="f-box" x="115" y="646" width="110" height="28" style="stroke:#f9731644;"/>
+      <text class="f-text-s" x="170" y="664" style="fill:#f97316;">Correlation Engine</text>
+      <rect class="f-box" x="240" y="646" width="120" height="28" style="stroke:#f9731644;"/>
+      <text class="f-text-s" x="300" y="664" style="fill:#f97316;">Velocity Counters</text>
+      <rect class="f-box" x="375" y="646" width="110" height="28" style="stroke:#f9731644;"/>
+      <text class="f-text-s" x="430" y="664" style="fill:#f97316;">Persist BetContext</text>
+    </svg>
     <div class="diagram-caption">Fraud checks inject BEFORE the existing order pipeline. Target: &lt;50ms total fraud overhead.</div>
   </div>
 
   <h3 style="margin-top: 2rem;">Login Flow (with Fraud Capture)</h3>
   <div class="diagram-wrap">
-    <div class="mermaid">
-%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
-flowchart LR
-    A["User logs in"] --> B["Capture IP + Device FP + Geo"]
-    B --> C["Persist LoginEvent"]
-    C --> D{"Blocked?"}
-    D -->|Yes| E["REJECT login"]
-    D -->|No| F{"New device?"}
-    F -->|Yes| G["Create alert<br/><i>async, don't block</i>"]
-    F -->|No| H["Check multi-account<br/><i>same IP/device, diff user</i>"]
-    G --> I["Issue JWT"]
-    H -->|Suspicious| J["Create FraudAlert"]
-    H -->|Clear| I
-    J --> I
+    <svg viewBox="0 0 820 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:820px;display:block;margin:0 auto;">
+      <defs>
+        <marker id="la" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/></marker>
+        <marker id="la-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444"/></marker>
+      </defs>
+      <style>
+        .l-box { fill: #1a1a28; stroke: #2a2a3a; stroke-width: 1.5; rx: 8; }
+        .l-dec { fill: #1a1a28; stroke: #6366f1; stroke-width: 1.5; }
+        .l-rej { fill: #7f1d1d; stroke: #ef4444; stroke-width: 1.5; rx: 8; }
+        .l-wrn { fill: #78350f; stroke: #f97316; stroke-width: 1.5; rx: 8; }
+        .l-ok { fill: #14532d; stroke: #22c55e; stroke-width: 1.5; rx: 8; }
+        .l-t { fill: #e5e5ef; font-family: Inter, sans-serif; font-size: 10px; text-anchor: middle; }
+        .l-s { fill: #888899; font-family: Inter, sans-serif; font-size: 8px; text-anchor: middle; }
+        .l-lb { fill: #888899; font-family: Inter, sans-serif; font-size: 8px; }
+      </style>
 
-    style E fill:#7f1d1d,color:#fff,stroke:#ef4444
-    style G fill:#78350f,color:#fff,stroke:#f97316
-    style J fill:#78350f,color:#fff,stroke:#f97316
-    </div>
+      <!-- User logs in -->
+      <rect class="l-box" x="10" y="70" width="90" height="32"/>
+      <text class="l-t" x="55" y="90">User logs in</text>
+      <line x1="100" y1="86" x2="120" y2="86" stroke="#555" marker-end="url(#la)"/>
+
+      <!-- Capture context -->
+      <rect class="l-box" x="120" y="62" width="130" height="48"/>
+      <text class="l-t" x="185" y="82">Capture IP +</text>
+      <text class="l-t" x="185" y="96">Device FP + Geo</text>
+      <line x1="250" y1="86" x2="270" y2="86" stroke="#555" marker-end="url(#la)"/>
+
+      <!-- Persist LoginEvent -->
+      <rect class="l-box" x="270" y="70" width="110" height="32"/>
+      <text class="l-t" x="325" y="90">Persist LoginEvent</text>
+      <line x1="380" y1="86" x2="400" y2="86" stroke="#555" marker-end="url(#la)"/>
+
+      <!-- Decision: Blocked? -->
+      <polygon class="l-dec" points="440,66 480,86 440,106 400,86"/>
+      <text class="l-t" x="440" y="89" style="font-size:9px;">Blocked?</text>
+
+      <!-- Yes -> REJECT -->
+      <line x1="440" y1="66" x2="440" y2="30" stroke="#ef4444" marker-end="url(#la-red)"/>
+      <rect class="l-rej" x="395" y="5" width="90" height="26"/>
+      <text class="l-t" x="440" y="22">REJECT login</text>
+      <text class="l-lb" x="445" y="56">yes</text>
+
+      <!-- No -> New device? -->
+      <line x1="480" y1="86" x2="520" y2="86" stroke="#555" marker-end="url(#la)"/>
+      <text class="l-lb" x="490" y="80">no</text>
+
+      <!-- Decision: New device? -->
+      <polygon class="l-dec" points="560,66 610,86 560,106 520,86"/>
+      <text class="l-t" x="560" y="89" style="font-size:9px;">New device?</text>
+
+      <!-- Yes -> Create alert (async) -->
+      <line x1="560" y1="106" x2="560" y2="140" stroke="#f97316"/>
+      <rect class="l-wrn" x="500" y="140" width="120" height="36" rx="8"/>
+      <text class="l-t" x="560" y="156" style="font-size:9px;">Create alert</text>
+      <text class="l-s" x="560" y="168">async, don't block</text>
+      <text class="l-lb" x="565" y="124">yes</text>
+      <!-- Alert continues to JWT -->
+      <line x1="620" y1="158" x2="750" y2="158" stroke="#555"/>
+      <line x1="750" y1="158" x2="750" y2="96" stroke="#555" marker-end="url(#la)"/>
+
+      <!-- No -> Multi-account check -->
+      <line x1="610" y1="86" x2="650" y2="86" stroke="#555" marker-end="url(#la)"/>
+      <text class="l-lb" x="622" y="80">no</text>
+      <rect class="l-box" x="650" y="62" width="110" height="48"/>
+      <text class="l-t" x="705" y="80" style="font-size:9px;">Multi-account check</text>
+      <text class="l-s" x="705" y="94">same IP/device, diff user</text>
+
+      <!-- Suspicious -> FraudAlert -->
+      <line x1="705" y1="110" x2="705" y2="140" stroke="#f97316"/>
+      <rect class="l-wrn" x="655" y="140" width="100" height="30" rx="8"/>
+      <text class="l-t" x="705" y="159" style="font-size:9px;">FraudAlert</text>
+      <text class="l-lb" x="710" y="132">suspicious</text>
+
+      <!-- Issue JWT -->
+      <line x1="760" y1="86" x2="780" y2="86" stroke="#555" marker-end="url(#la)"/>
+      <rect class="l-ok" x="730" y="70" width="80" height="32" rx="8"/>
+      <text class="l-t" x="770" y="90">Issue JWT</text>
+    </svg>
     <div class="diagram-caption">Every login captures context. Alerts are async and don't block the user.</div>
   </div>
 </section>
@@ -992,67 +1247,86 @@ flowchart LR
   </div>
 
   <div class="diagram-wrap">
-    <div class="mermaid">
-%%{init: {'theme': 'dark', 'themeVariables': {'primaryColor': '#6366f1', 'primaryTextColor': '#e5e5ef', 'lineColor': '#555'}}}%%
-erDiagram
-    User ||--o{ LoginEvent : "has"
-    User ||--o{ V3DeviceFingerprint : "has (existing)"
-    User ||--o{ V3IpAccessLog : "has (existing)"
-    User ||--o{ BetContext : "has"
-    User ||--o{ V3Alert : "has (existing)"
-    Order ||--|| BetContext : "has"
-    FraudCase ||--o{ V3Alert : "contains"
-
-    LoginEvent {
-        string userId
-        string ipAddress
-        string deviceFingerprint
-        string geoCountry
-        string geoCity
-        int riskScore
-        datetime createdAt
-    }
-
-    BetContext {
-        string orderId
-        string ipAddress
-        string deviceFingerprint
-        int riskScore
-        string riskLevel
-        json riskSignals
-        string recommendation
-    }
-
-    FraudCase {
-        string title
-        string severity
-        string status
-        string assignedTo
-        string actionTaken
-    }
-
-    BlockedEntity {
-        string entityType
-        string entityValue
-        string blockType
-        string reason
-        datetime expiresAt
-    }
-
-    BetCorrelation {
-        string correlationType
-        string fixtureId
-        float correlationScore
-        int timeWindowSec
-    }
-
-    AdminAuditLog {
-        string adminUserId
-        string action
-        string targetType
-        json previousState
-        json newState
-    }
+    <h4 style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--accent2);">Entity Relationship Diagram</h4>
+    <div class="entity-grid">
+      <div class="entity-card" style="border-color: var(--green);">
+        <h5 style="color: var(--green);">User <span style="font-size:0.65rem;font-weight:400;color:var(--muted);">(existing)</span></h5>
+        <ul>
+          <li><span>1:N</span> LoginEvent</li>
+          <li><span>1:N</span> V3DeviceFingerprint</li>
+          <li><span>1:N</span> V3IpAccessLog</li>
+          <li><span>1:N</span> BetContext (via Order)</li>
+          <li><span>1:N</span> V3Alert</li>
+        </ul>
+      </div>
+      <div class="entity-card" style="border-color: var(--blue);">
+        <h5 style="color: var(--blue);">LoginEvent <span style="font-size:0.65rem;font-weight:400;color:var(--muted);">(new)</span></h5>
+        <ul>
+          <li><span>str</span> userId</li>
+          <li><span>str</span> ipAddress</li>
+          <li><span>str</span> deviceFingerprint</li>
+          <li><span>str</span> geoCountry, geoCity</li>
+          <li><span>int</span> riskScore</li>
+          <li><span>date</span> createdAt</li>
+        </ul>
+      </div>
+      <div class="entity-card" style="border-color: var(--blue);">
+        <h5 style="color: var(--blue);">BetContext <span style="font-size:0.65rem;font-weight:400;color:var(--muted);">(new)</span></h5>
+        <ul>
+          <li><span>str</span> orderId</li>
+          <li><span>str</span> ipAddress</li>
+          <li><span>str</span> deviceFingerprint</li>
+          <li><span>int</span> riskScore</li>
+          <li><span>str</span> riskLevel</li>
+          <li><span>json</span> riskSignals</li>
+          <li><span>str</span> recommendation</li>
+        </ul>
+      </div>
+      <div class="entity-card" style="border-color: var(--blue);">
+        <h5 style="color: var(--blue);">FraudCase <span style="font-size:0.65rem;font-weight:400;color:var(--muted);">(new)</span></h5>
+        <ul>
+          <li><span>str</span> title</li>
+          <li><span>str</span> severity</li>
+          <li><span>str</span> status</li>
+          <li><span>str</span> assignedTo</li>
+          <li><span>str</span> actionTaken</li>
+          <li><span>1:N</span> V3Alert</li>
+        </ul>
+      </div>
+      <div class="entity-card" style="border-color: var(--blue);">
+        <h5 style="color: var(--blue);">BlockedEntity <span style="font-size:0.65rem;font-weight:400;color:var(--muted);">(new)</span></h5>
+        <ul>
+          <li><span>str</span> entityType</li>
+          <li><span>str</span> entityValue</li>
+          <li><span>str</span> blockType</li>
+          <li><span>str</span> reason</li>
+          <li><span>date</span> expiresAt</li>
+        </ul>
+      </div>
+      <div class="entity-card" style="border-color: var(--blue);">
+        <h5 style="color: var(--blue);">BetCorrelation <span style="font-size:0.65rem;font-weight:400;color:var(--muted);">(new)</span></h5>
+        <ul>
+          <li><span>str</span> correlationType</li>
+          <li><span>str</span> fixtureId</li>
+          <li><span>float</span> correlationScore</li>
+          <li><span>int</span> timeWindowSec</li>
+        </ul>
+      </div>
+      <div class="entity-card" style="border-color: var(--blue);">
+        <h5 style="color: var(--blue);">AdminAuditLog <span style="font-size:0.65rem;font-weight:400;color:var(--muted);">(new)</span></h5>
+        <ul>
+          <li><span>str</span> adminUserId</li>
+          <li><span>str</span> action</li>
+          <li><span>str</span> targetType</li>
+          <li><span>json</span> previousState</li>
+          <li><span>json</span> newState</li>
+        </ul>
+      </div>
+    </div>
+    <div class="entity-rel">
+      <div class="entity-rel-item"><strong>User</strong> &rarr; has many &rarr; <strong>LoginEvent</strong>, <strong>V3DeviceFingerprint</strong>, <strong>V3IpAccessLog</strong>, <strong>V3Alert</strong></div>
+      <div class="entity-rel-item"><strong>Order</strong> &rarr; has one &rarr; <strong>BetContext</strong></div>
+      <div class="entity-rel-item"><strong>FraudCase</strong> &rarr; contains many &rarr; <strong>V3Alert</strong></div>
     </div>
     <div class="diagram-caption">Green = reuse existing B-Book v3 models. Blue = new models. No duplicate schemas.</div>
   </div>
@@ -1067,26 +1341,6 @@ erDiagram
     <p style="margin-top: 0.25rem;">Created by Bhargav Veepuri &bull; Review required from all team members before implementation</p>
   </div>
 </div>
-
-<script>
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: 'dark',
-    themeVariables: {
-      darkMode: true,
-      background: '#12121a',
-      primaryColor: '#6366f1',
-      primaryTextColor: '#e5e5ef',
-      primaryBorderColor: '#4f46e5',
-      lineColor: '#555',
-      secondaryColor: '#1a1a28',
-      tertiaryColor: '#12121a',
-      fontSize: '14px',
-    },
-    flowchart: { htmlLabels: true, curve: 'basis' },
-    er: { useMaxWidth: true },
-  });
-</script>
 
 </body>
 </html>
